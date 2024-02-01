@@ -72,7 +72,11 @@ def get_poems_by_a_poet(poet: str, num_of_poems: int = 5) -> list:
         return list(poems_of_poet.sample(num_of_poems)["Title"])
 
 def get_poem_by_title(title: str, *poet: str) -> tuple:
-    '''Poet param is optional, useful when more than one poem has the same name.'''
+    '''
+    Poet param is optional, useful when more than one poem has the same name.
+
+    Returns: `(Poet, Poem)`
+    '''
     if poet:
         for row in df.itertuples():
             if row.Title == title and row.Poet == poet[0]:
