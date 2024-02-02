@@ -1,0 +1,22 @@
+def main():
+    try:
+        from bot import bot
+        from os import getenv
+        from dotenv import load_dotenv
+        from logger import get_handler
+        from logging import INFO
+        from poetry_interface import initialize_dataframe
+
+        load_dotenv()
+        token = getenv('DISCORD_TOKEN')
+
+        _, handler = get_handler()
+        
+        initialize_dataframe("Poetry.csv")
+
+        bot.run(token, log_handler=handler, log_level=INFO)
+    except:
+        print("Something went wrong...")
+        
+if __name__ == "__main__":
+    main()

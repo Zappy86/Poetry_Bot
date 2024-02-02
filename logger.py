@@ -1,7 +1,7 @@
 import logging
 
 def get_handler():
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger('Poetry_Bot')
     logger.setLevel(logging.INFO)
     
     handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
@@ -9,4 +9,4 @@ def get_handler():
     
     logger.addHandler(handler)
     
-    return handler
+    return logger, handler

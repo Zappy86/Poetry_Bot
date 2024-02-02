@@ -2,6 +2,7 @@ import pandas as pd
 
 def initialize_dataframe(data_file_input: str) -> int:
     '''Loads the `data_file` into memory. Returns `0` on completion.'''
+    
     global df, data_file
     data_file = data_file_input
     try:
@@ -13,6 +14,7 @@ def initialize_dataframe(data_file_input: str) -> int:
 # Returns a set so there are no duplicates
 def list_tags() -> set:
     '''Returns a set with every tag.'''
+    
     tags = set()
     
     # Ignores "na", AKA NaNs, AKA missing values
@@ -21,11 +23,12 @@ def list_tags() -> set:
         
     return tags
 
-def get_total_num_of_tags(desired_tag: str) -> int:
+def get_num_of_tag(desired_tag: str) -> int:
+    # Returns the sum of a boolean table, 1s and 0s, the result will be the number of True items
     return df['Tags'].str.contains(desired_tag).sum()
 
 def get_total_num_of_poems() -> int:
-    return df.last_valid_index()
+    return int(df.last_valid_index())
 
 def get_poems_with_tag(desired_tag: str, num_of_poems: int = 5) -> list:
     '''
@@ -33,12 +36,14 @@ def get_poems_with_tag(desired_tag: str, num_of_poems: int = 5) -> list:
     
     `[(Title, Poet), (Title, Poet)]`
     '''
-    poems_with_tag = df[df["Tags"].str.contains(desired_tag, na=False)]
+    # Maps a boolean table of the tags column to the original dataframe
+    poems_with_tag = df[df["Tags"].str.contains(desired_tag, na=False)].reset_index()
     
     if poems_with_tag.empty:
         return []
     
-    if poems_with_tag.last_valid_index() < num_of_poems - 1:
+    # If there are less poems than requested, return all poems, otherwise take a sample
+    if int(poems_with_tag.last_valid_index()) < num_of_poems - 1:
         chosen_poems = list(zip(poems_with_tag["Title"] , poems_with_tag["Poet"]))
         return chosen_poems
     
@@ -49,8 +54,10 @@ def get_poems_with_tag(desired_tag: str, num_of_poems: int = 5) -> list:
 
 def get_tags_of_poem(title: str, poet: str = "") -> list:
     '''Poet param is optional, useful when more than one poem has the same name.'''
+    
     tags = []
     
+    # If poet was given, checks against title and poet, otherwise just title
     if poet:
         for row in df.itertuples():
             if row.Title == title and row.Poet == poet[0]:
@@ -63,11 +70,17 @@ def get_tags_of_poem(title: str, poet: str = "") -> list:
 
 def get_poems_by_a_poet(poet: str, num_of_poems: int = 5) -> list:
     '''Returns a list of Titles.'''
+    
+    # Maps a boolean table of the Poet column to the original dataframe
     poems_of_poet = df[df["Poet"].str.contains(poet, na=False)]
+    
     if poems_of_poet.empty:
         return []
-    if poems_of_poet.last_valid_index() < num_of_poems - 1:
+    
+    # Returns whole title column or random sample of it
+    if int(poems_of_poet.last_valid_index()) < num_of_poems - 1:
         return list(poems_of_poet["Title"])
+    
     else:
         return list(poems_of_poet.sample(num_of_poems)["Title"])
 
@@ -77,6 +90,8 @@ def get_poem_by_title(title: str, *poet: str) -> tuple:
 
     Returns: `(Poet, Poem)`
     '''
+    
+    # If poet was given, checks against title and poet, otherwise just title
     if poet:
         for row in df.itertuples():
             if row.Title == title and row.Poet == poet[0]:
@@ -89,37 +104,71 @@ def get_poem_by_title(title: str, *poet: str) -> tuple:
 
 def get_all_poems_with_title(title: str) -> list:
     '''
-    Returns Titles and Poems as tuples in a list:
+    Returns Titles and Poets as tuples in a list:
     
     `[(Title, Poet), (Title, Poet)]`
     '''
+    
+    # Maps a boolean table, title must match exactly, not very useful compared to search
     poems_with_title = df[df["Title"] == title]
     
-    if not poems_with_title.empty:
+    if poems_with_title.empty:
+        return []    
+    else:
         chosen_poems = list(zip(poems_with_title["Title"] , poems_with_title["Poet"]))
         return chosen_poems
-    else:
-        return []
 
-def search_titles_for_string(title: str) -> list:
+
+def search_titles_for_string(search: str, num_of_poems) -> list:
     '''
-    Returns a list of tuples with exact matches first:
+    Returns a list of tuples with exact matches first, 
     
-    `[(Exact_Title, Poet), (Title, Poet)]`
+    and the number of titles that matched the string:
+    
+    `[[(Exact_Title, Poet), (Title, Poet)], num_of_titles]`
     '''
-    poems_with_string = df[df["Title"].str.contains(title, na=False)]
     
-    if not poems_with_string.empty:
-        chosen_poems = list(zip(poems_with_string["Title"] , poems_with_string["Poet"]))
-        for index, item in enumerate(chosen_poems):
-            if title == item[0]:
-                chosen_poems.insert(0, chosen_poems.pop(index))
-        return chosen_poems
-    else:
+    # Compares df to boolean map, this is passed a lowercase value and checks against lowercase values
+    poems_with_string = df[df["Title"].str.lower().str.contains(search, na=False)].reset_index()
+    
+    if poems_with_string.empty:
         return []
+    
+    chosen_poems = list(zip(poems_with_string["Title"] , poems_with_string["Poet"]))
+
+    num_of_titles = (len(chosen_poems))
+    
+    # Moves exact matches to front of list and returns it if there are less titles found than the requested number
+    if num_of_titles < num_of_poems:
+        for index, item in enumerate(chosen_poems):
+            if search == item[0].lower():
+                chosen_poems.insert(0, chosen_poems.pop(index))
+                print("Exact match found!")
+        return [chosen_poems, num_of_titles]
+    
+    # If there are more results than requested, adds exact matches to limited_poems, pops the match that was added,
+    # then gets a sample for how many more are needed to bring the total to the requested number and adds that to limited_poems
+    else:
+        limited_poems = []
+        for index, item in enumerate(chosen_poems):
+            if search == item[0].lower():
+                limited_poems.append(item)
+                chosen_poems.pop(index)
+                
+        print(f"limited_poems: {limited_poems}")
+        
+        if len(limited_poems) < num_of_poems:
+            print(f"num-len= {num_of_poems-len(limited_poems)}")
+            sample = poems_with_string.sample(num_of_poems - len(limited_poems))
+            limited_poems += [(poem.Title, poem.Poet) for poem in sample.itertuples()]
+            
+        return [limited_poems, num_of_titles]
+    
+
 
 def get_duplicates() -> None:
     '''Function I used for debugging, for some reason there are 21 different poems named "Song"...'''
+    
     duplicates = list((df.dropna()[df["Title"].dropna().duplicated(keep=False)])["Title"])
     dup_dict = {}
 
@@ -144,6 +193,7 @@ def get_rand_poem(num_of_poems: int = 1) -> list:
 
 def edit_poem(title: str, poet: str, poem_edit: str) -> None:
     '''Edit the text of a poem using it's title and author, many of the poems are formatted poorly.'''
+    
     for row in df.itertuples(index=True):
         if (row.Title == title) and (row.Poet == poet):
             df.at[row[0], "Poem"] = poem_edit

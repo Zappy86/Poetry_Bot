@@ -1,51 +1,106 @@
 import discord
 from discord.ext import commands
-from os import getenv
-from dotenv import load_dotenv
-import logging
 import poetry_interface as pi
+from logger import get_handler
 
-load_dotenv()
-token = getenv('DISCORD_TOKEN')
+description = "I have over 500000 lines of poetry, use me well!"
 
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+log, handler = get_handler()
 
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 
-bot = commands.Bot(command_prefix="!", intents = intents)
+bot = commands.Bot(command_prefix="!", intents = intents, description=description)
 
-pi.initialize_dataframe("Poetry.csv")
+async def nonfatal_error(ctx):
+    log.critical("There was an error!")
+    await ctx.send("Something went wrong!\n\n(You should probably tell Dominic...)")
+    return 0
+
+async def not_found(ctx):
+    await ctx.send("Sorry! I couldn't find what you were looking for. :/")
+    return 0
+
+async def send_message(ctx, message, split_character):
+        
+    if len(message) > 2000:
+        current_chunk = []
+        words = message.split(split_character)
+        chunks = []
+        for word in words:
+            if len(split_character.join(current_chunk + [word])) <= 2000:
+                current_chunk.append(word)
+            else:
+                chunks.append(split_character.join(current_chunk))
+                current_chunk = [word]
+        if current_chunk: chunks.append(split_character.join(current_chunk))
+        for chunk in chunks:
+                await ctx.send(chunk)
+    else:
+        await ctx.send(message)
+    return 0
+
+async def log_command(ctx, *args):
+    log.info(f"{ctx.author} invoked '{ctx.message}'{args}")
+    return 0
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}")
-    logging.info(f"Logged in as {bot.user}") # FIXME
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name =f"NOTHING, I AM THE BEST"))
-    print(discord.__version__)
+    print(f"Logged in as {bot.user}!")
+    # log.info(f"Logged in as {bot.user}!")
 
 @bot.command()
 async def title(ctx, title, poet=""):
-    if poet:
-        result = pi.get_poem_by_title(title, poet)
-    else:
-        result = pi.get_poem_by_title(title)
     
-    if not result:
-        await ctx.send("No poem with that title found.")
+    if poet:
+        results = pi.get_poem_by_title(title, poet)
+    else:
+        results = pi.get_poem_by_title(title)
+    
+    if not results:
+        await not_found(ctx)
+        await log_command(ctx, " with no results")
         return
     
-    message = f"{title}, by {result[0]}\n{result[1]}"
+    message = f"{title}, by {results[0]}\n{results[1]}"
     
-    if len(message) > 4000:
-        message = [message[i:i+1900] for i in range(0, len(message), 1900)]
-    
-        for x in message:
-            await ctx.send(x)
+    await log_command(ctx)
+    await send_message(ctx, message, "\n")
+
+@bot.command()
+async def search(ctx, search, num_of_poems = 10):
+    results = pi.search_titles_for_string(str(search).lower(), int(num_of_poems))
+    if not results[0]:
+        await not_found(ctx)
+        await log_command(ctx, " with no results")
+        return
+    if results[1] <= num_of_poems:
+        message = f"Showing all results:\n"
     else:
-        await ctx.send(message)
+        message = f"Showing {num_of_poems} of {results[1]}:"
 
+    for title, poet in results[0]:
+        message += f'\n- "{title}", by {poet}'
+    await log_command(ctx)
+    await send_message(ctx, message, "\n")
 
-
-bot.run(token, log_handler=handler, log_level=logging.INFO) # This will end up in main.py, with "bot" being imported
+@bot.command()
+async def tags(ctx):
+    results = pi.list_tags()
+    message = f"There are {len(results)} tags:\n\n"
+    
+    if not results:
+        await nonfatal_error()
+        return
+    
+    message + f"{results[0]}"
+    for tag in results[1:]:
+        message += f",{tag} "
+        
+    await log_command(ctx)
+    await send_message(ctx, message, " ")
+    
+if __name__ == "__main__":
+    import os
+    print("\nPlease run 'main.py' to initialise bot!\n")
