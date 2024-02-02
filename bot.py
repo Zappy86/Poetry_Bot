@@ -3,9 +3,12 @@ from discord.ext import commands
 import poetry_interface as pi
 from logger import get_handler
 
-description = "I have over 500000 lines of poetry, use me well!"
+description = "I've got over 10,000 poems'!"
 
-log, handler = get_handler()
+def give_logger(arg1, arg2):
+    global log, handler
+    log = arg1
+    handler=arg2
 
 intents = discord.Intents.default()
 intents.members = True
@@ -42,7 +45,8 @@ async def send_message(ctx, message, split_character):
     return 0
 
 async def log_command(ctx, *args):
-    log.info(f"{ctx.author} invoked '{ctx.message}'{args}")
+    if not args: args = ""
+    log.info(f"@{ctx.author} invoked '{ctx.message.content}'{args}")
     return 0
 
 @bot.event
@@ -75,6 +79,7 @@ async def search(ctx, search, num_of_poems = 10):
         await not_found(ctx)
         await log_command(ctx, " with no results")
         return
+
     if results[1] <= num_of_poems:
         message = f"Showing all results:\n"
     else:
@@ -82,6 +87,7 @@ async def search(ctx, search, num_of_poems = 10):
 
     for title, poet in results[0]:
         message += f'\n- "{title}", by {poet}'
+
     await log_command(ctx)
     await send_message(ctx, message, "\n")
 

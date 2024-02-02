@@ -1,6 +1,6 @@
 def main():
     try:
-        from bot import bot
+        from bot import bot, give_logger
         from os import getenv
         from dotenv import load_dotenv
         from logger import get_handler
@@ -10,7 +10,8 @@ def main():
         load_dotenv()
         token = getenv('DISCORD_TOKEN')
 
-        _, handler = get_handler()
+        log, handler = get_handler()
+        give_logger(log, handler)
         
         initialize_dataframe("Poetry.csv")
 
