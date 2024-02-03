@@ -1,6 +1,6 @@
 # <div align="center"> <img src="https://prisonerexpress.org/wp-content/uploads/2016/09/Pe-Poetry-Icon.png" alt="drawing" width="75"/> A Simple Poetry Discord Bot <img src="https://prisonerexpress.org/wp-content/uploads/2016/09/Pe-Poetry-Icon.png" alt="drawing" width="75"/> </div>
 
-The code may not be the cleanest, but at least I tried! As Teddy Roosevelt said, not in reference to art but regardless, the worst thing you can do is *nothing*.
+The code may not be the cleanest, but at least I tried! As Teddy Roosevelt said, not in reference to art or code but regardless, the worst thing you can do is *nothing*.
 
 This was my first real Python project too!
 
