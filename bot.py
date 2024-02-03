@@ -8,8 +8,9 @@ def prepare_attributes(arg1, arg2):
     handler=arg2
 
 intents = discord.Intents.default()
-intents.members = True
 intents.message_content = True
+intents.guild_typing = False
+intents.dm_typing = False
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"), intents = intents, help_command=None, strip_after_prefix=True, 
 case_insensitive=True, activity = discord.Game(name="!help"))
