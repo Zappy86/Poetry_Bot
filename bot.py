@@ -30,7 +30,7 @@ async def not_found(ctx):
     await ctx.send("```Sorry! I couldn't find what you were looking for. :/```")
     return 0
 
-async def send_message(ctx, message, split_character = " "):
+async def send_message(ctx, message, split_character = "\n"):
         
     if len(message) > 1990:
         current_chunk = []
@@ -44,12 +44,16 @@ async def send_message(ctx, message, split_character = " "):
                 current_chunk = [word]
         if current_chunk: chunks.append(split_character.join(current_chunk))
         for chunk in chunks:
-                await ctx.send(f"{chunk}")
+                await ctx.send(f"```{chunk}```")
     else:
-        await ctx.send(f"{message}")
+        await ctx.send(f"```{message}```")
     return 0
 
 # Benefits of (semi-clean) code! I didn't have to redo everything to wrap "```" around all the messages!
+
+@bot.event
+async def on_command_error(ctx, error):
+    await ctx.send(f"```Sorry! There was an error: -> {error} <-```")
 
 @bot.event
 async def on_ready():
@@ -70,7 +74,7 @@ async def poem(ctx, title, poet=""):
     message = f"{title}, by {results[0]}\n{results[1]}"
     
     await log_command(ctx)
-    await send_message(ctx, message, "\n")
+    await send_message(ctx, message)
 
 @bot.command(name="exact-title")
 async def exact_title(ctx, title):
@@ -85,7 +89,7 @@ async def exact_title(ctx, title):
         message += f'\n- "{title}", by {poet}'
     
     await log_command(ctx)
-    await send_message(ctx, message, "\n")
+    await send_message(ctx, message)
 
 @bot.command()
 async def search(ctx, search, num_of_poems = 10):
@@ -103,7 +107,7 @@ async def search(ctx, search, num_of_poems = 10):
         message += f'\n- "{title}", by {poet}'
 
     await log_command(ctx)
-    await send_message(ctx, message, "\n")
+    await send_message(ctx, message)
 
 @bot.command(name="tags-list")
 async def tags_list(ctx):
@@ -137,10 +141,10 @@ async def tags(ctx, title, poet=""):
         message += f", {tag}"
     
     await log_command(ctx)
-    await send_message(ctx, message, "\n")
+    await send_message(ctx, message)
 
 @bot.command(name="poems-with-tag")
-async def poems_with_tag(ctx, tag, num_of_poems = 5):
+async def poems_with_tag(ctx, tag, num_of_poems = 10):
     results = pi.get_poems_with_tag(tag, num_of_poems)
     if not results:
         not_found()
@@ -170,7 +174,7 @@ async def poet(ctx, search, num_of_poems = 10):
         message += f'\n-"{title}"'
 
     await log_command(ctx)
-    await send_message(message)
+    await send_message(ctx, message)
 
 @bot.command(name="num-of-tag")
 async def num_of_tag(ctx, tag):
@@ -203,7 +207,7 @@ async def random(ctx, number_of_poems = 1):
         message += f'\n"{title}", by {poet}\n{poem}'
     
     await log_command(ctx)
-    await send_message(ctx, message, "\n")
+    await send_message(ctx, message)
     
 @bot.command()
 async def help(ctx, *, arg : str = ""):
