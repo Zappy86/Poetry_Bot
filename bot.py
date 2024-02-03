@@ -248,7 +248,7 @@ async def help(ctx, *, arg : str = ""):
             await ctx.send("```Command not found, say '!help' for a list of commands.```")
             log.info(f"'@{ctx.author}' invoked '{ctx.message.content}' in {ctx.channel} and it failed")
     else:
-        message = (f"\n{description}\n\nParameters (except those with *) usually need to be wrapped in quotes, bracket specify an optional parameter.\n\n")
+        message = (f"\n{description}\n\nParameters (except those with *) usually need to be wrapped in quotes, brackets specify an optional parameter.\n\n")
         for command in help_messages:
             message += f"{command} - {help_messages[command]}\n\n"
         await log_command(ctx)
