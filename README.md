@@ -25,6 +25,7 @@ These are instructions for *Windows*, they may be different on other operating s
 5) Run `pip install -r requirements.txt`
 6) Run the main file with `py main.py`'
 7) Invite the bot to your server at some point with a link from the Developer Portal
+    - Enable "Read Messages/View Channels", "Send Messages", and "Send Messages in Threads"... or just admin
 
 If you made the venv you have to start it up again so you have access to the modules every time in the future that you need to start up the bot.
 
