@@ -13,9 +13,9 @@ I turned off intellisense, and tried to use AI as little as possible, so I think
 Maybe I should've used SQLite... when I started I was *not* in the mood to learn another programming language, but in the end I think figuring out pandas and re-formatting everything with that was probably just as tricky. Too late now!
 
 ## Setup
-You probably shouldn't use this bot! But if you'd like to you certainly can! (Btw I didn't test these instructions)
+You probably shouldn't use this bot! But if you'd like to you certainly can!
 
-These are instructions for *Windows*, they may be different on other operating systems.
+These are instructions for *Windows*, and they're probably a little different on other operating systems.
 1) Download the code, and make sure Python is installed
 2) Use the [Discord Developer Portal](https://discord.com/developers/applications) to make a bot and get a token, and enable the Message Content Intent
 3) Create a file named `.env` file after the example
