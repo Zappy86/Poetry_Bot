@@ -2,4 +2,5 @@
 .env
 /pycache/*
 discord.log
-Edit_data
+zpoetry_edit.txt
+zproof_of_concept.py

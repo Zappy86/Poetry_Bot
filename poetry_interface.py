@@ -28,7 +28,7 @@ def get_num_of_tag(desired_tag: str) -> int:
     return df['Tags'].str.lower().str.contains(desired_tag).sum()
 
 def get_total_num_of_poems() -> int:
-    return int(df.last_valid_index())
+    return int(df.last_valid_index() + 1)
 
 def get_poems_with_tag(desired_tag: str, num_of_poems: int = 5) -> list:
     '''
@@ -43,7 +43,7 @@ def get_poems_with_tag(desired_tag: str, num_of_poems: int = 5) -> list:
         return []
     
     # If there are less poems than requested, return all poems, otherwise take a sample
-    if int(poems_with_tag.last_valid_index()) < num_of_poems - 1:
+    if int(poems_with_tag.last_valid_index() + 1) < num_of_poems:
         chosen_poems = list(zip(poems_with_tag["Title"] , poems_with_tag["Poet"]))
         return chosen_poems
     
@@ -75,15 +75,15 @@ def get_poems_by_a_poet(poet: str, num_of_poems: int = 5) -> tuple:
     '''
     
     # Maps a boolean table of the Poet column to the original dataframe, with a new index
-    poems_of_poet = df[df["Poet"].str.contains(poet, na=False)].reset_index()
-    
+    poems_of_poet = df[df["Poet"].str.lower().str.contains(poet.lower(), na=False)].reset_index()
+        
     if poems_of_poet.empty:
-        return []
+        return [[], 0]
     
-    num_of_titles = poems_of_poet.last_valid_index()
-    
+    num_of_titles = poems_of_poet.last_valid_index() + 1
+        
     # Returns whole title column or random sample of it
-    if int(poems_of_poet.last_valid_index()) < num_of_poems - 1:
+    if int(num_of_titles) < num_of_poems:
         return [list(poems_of_poet["Title"]), num_of_titles]
     
     else:
@@ -99,11 +99,11 @@ def get_poem_by_title(title: str, *poet: str) -> tuple:
     # If poet was given, checks against title and poet, otherwise just title
     if poet:
         for row in df.itertuples():
-            if row.Title == title and row.Poet == poet[0]:
+            if str(row.Title).lower() == title.lower() and str(row.Poet).lower() == poet[0].lower():
                 return (row.Poet, row.Poem)
     else:
         for row in df.itertuples():
-            if row.Title == title:
+            if str(row.Title).lower() == title.lower():
                 return (row.Poet, row.Poem)
     return ()
 
@@ -148,7 +148,6 @@ def search_titles_for_string(search: str, num_of_poems) -> list:
         for index, item in enumerate(chosen_poems):
             if search == item[0].lower():
                 chosen_poems.insert(0, chosen_poems.pop(index))
-                print("Exact match found!")
         return [chosen_poems, num_of_titles]
     
     # If there are more results than requested, adds exact matches to limited_poems, pops the match that was added,
@@ -159,11 +158,8 @@ def search_titles_for_string(search: str, num_of_poems) -> list:
             if search == item[0].lower():
                 limited_poems.append(item)
                 chosen_poems.pop(index)
-                
-        print(f"limited_poems: {limited_poems}")
-        
+                        
         if len(limited_poems) < num_of_poems:
-            print(f"num-len= {num_of_poems-len(limited_poems)}")
             sample = poems_with_string.sample(num_of_poems - len(limited_poems))
             limited_poems += [(poem.Title, poem.Poet) for poem in sample.itertuples()]
             

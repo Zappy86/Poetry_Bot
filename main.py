@@ -24,6 +24,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-#FIXME ADD COMMENTS TO BOT.PY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# Add parser so you can copy paste directly from lists, and request something?
