@@ -137,7 +137,7 @@ def search_titles_for_string(search: str, num_of_poems) -> list:
     poems_with_string = df[df["Title"].str.lower().str.contains(search, na=False)].reset_index()
     
     if poems_with_string.empty:
-        return []
+        return [[], 0]
     
     chosen_poems = list(zip(poems_with_string["Title"] , poems_with_string["Poet"]))
 

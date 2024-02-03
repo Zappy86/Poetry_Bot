@@ -20,11 +20,6 @@ async def log_command(ctx, *args):
     log.info(f"'@{ctx.author}' invoked '{ctx.message.content}'{args} in '{ctx.channel}'")
     return 0
 
-async def nonfatal_error(ctx):
-    log.critical("There was an error!")
-    await ctx.send("Something went __***very wrong!***__\n\n(You should probably tell Dominic...)")
-    return 0
-
 async def not_found(ctx):
     await log_command(ctx, " with no results")
     await ctx.send("```Sorry! I couldn't find what you were looking for. :/```")
@@ -116,10 +111,6 @@ async def tags_list(ctx):
     results = pi.list_tags()
     message = f"There are **{len(results)}** tags:\n\n"
     
-    if not results:
-        await nonfatal_error()
-        return
-    
     message += f"{results[0]}"
     for tag in results[1:]:
         message += f", {tag}"
@@ -195,10 +186,6 @@ async def num_of_tag(ctx, tag):
 @bot.command()
 async def random(ctx, number_of_poems = 1):
     results = pi.get_rand_poem(number_of_poems)
-    
-    if not results:
-        await nonfatal_error()
-        return
 
     if number_of_poems == 1:
         message = f"Here is a random poem:\n"
