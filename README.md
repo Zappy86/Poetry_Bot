@@ -21,7 +21,7 @@ These are instructions for *Windows*, they may be different on other operating s
 3) Create a `.env` file after the example
 4) For if you don't want to clutter python's modules, otherwise skip this:
     - With the code's directory open, run `python -m venv .venv`
-    - Run `.\.venv\scripts\activate`
+    - Run `.venv\scripts\activate`
 5) Run `pip install -r requirements.txt`
 6) Run the main file with `py main.py`'
 7) Invite the bot to your server at some point with a link from the Developer Portal
