@@ -18,7 +18,7 @@ You probably shouldn't use this bot! But if you'd like to you certainly can! (Bt
 These are instructions for *Windows*, they may be different on other operating systems.
 1) Download the code, and make sure Python is installed
 2) Use the [Discord Developer Portal](https://discord.com/developers/applications) to make a bot and get a token, and enable the Message Content Intent
-3) Create a `.env` file after the example
+3) Create a file named `.env` file after the example
 4) For if you don't want to clutter python's modules, otherwise skip this:
     - With the code's directory open, run `python -m venv .venv`
     - Run `.venv\scripts\activate`
