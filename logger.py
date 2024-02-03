@@ -10,3 +10,7 @@ def get_handler():
     logger.addHandler(handler)
     
     return logger, handler
+
+if __name__ == "__main__":
+    import os
+    print("\nPlease run 'main.py' to initialise bot!\n")

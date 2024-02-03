@@ -12,7 +12,7 @@ def initialize_dataframe(data_file_input: str) -> int:
         return -1
 
 # Returns a set so there are no duplicates
-def list_tags() -> set:
+def list_tags() -> list:
     '''Returns a set with every tag.'''
     
     tags = set()
@@ -21,11 +21,11 @@ def list_tags() -> set:
     for row in df.dropna().itertuples():
         tags.update(row.Tags.split(","))
         
-    return tags
+    return list(tags)
 
 def get_num_of_tag(desired_tag: str) -> int:
     # Returns the sum of a boolean table, 1s and 0s, the result will be the number of True items
-    return df['Tags'].str.contains(desired_tag).sum()
+    return df['Tags'].str.lower().str.contains(desired_tag).sum()
 
 def get_total_num_of_poems() -> int:
     return int(df.last_valid_index())
@@ -68,21 +68,26 @@ def get_tags_of_poem(title: str, poet: str = "") -> list:
                 tags = row.Tags.split(",")
     return tags
 
-def get_poems_by_a_poet(poet: str, num_of_poems: int = 5) -> list:
-    '''Returns a list of Titles.'''
+def get_poems_by_a_poet(poet: str, num_of_poems: int = 5) -> tuple:
+    '''
+    Returns a list with a list of titles and the number of titles found.
+    `[[titles], num_of_titles_found]`
+    '''
     
-    # Maps a boolean table of the Poet column to the original dataframe
-    poems_of_poet = df[df["Poet"].str.contains(poet, na=False)]
+    # Maps a boolean table of the Poet column to the original dataframe, with a new index
+    poems_of_poet = df[df["Poet"].str.contains(poet, na=False)].reset_index()
     
     if poems_of_poet.empty:
         return []
     
+    num_of_titles = poems_of_poet.last_valid_index()
+    
     # Returns whole title column or random sample of it
     if int(poems_of_poet.last_valid_index()) < num_of_poems - 1:
-        return list(poems_of_poet["Title"])
+        return [list(poems_of_poet["Title"]), num_of_titles]
     
     else:
-        return list(poems_of_poet.sample(num_of_poems)["Title"])
+        return [list(poems_of_poet.sample(num_of_poems)["Title"]), num_of_titles]
 
 def get_poem_by_title(title: str, *poet: str) -> tuple:
     '''
@@ -187,6 +192,7 @@ def get_duplicates() -> None:
     print(f"Most duplicates: '{max_keys}' with {max_value} duplicates.")
 
 def get_rand_poem(num_of_poems: int = 1) -> list:
+    '''Returns list: `[(Title, Poet, Poem), (Title, Poet, Poem)]`'''
     sample = df.sample(num_of_poems)
     
     return [(poem.Title, poem.Poet, poem.Poem) for poem in sample.itertuples()]
@@ -198,3 +204,7 @@ def edit_poem(title: str, poet: str, poem_edit: str) -> None:
         if (row.Title == title) and (row.Poet == poet):
             df.at[row[0], "Poem"] = poem_edit
     df.to_csv(data_file)
+    
+if __name__ == "__main__":
+    import os
+    print("\nPlease run 'main.py' to initialise bot!\n")

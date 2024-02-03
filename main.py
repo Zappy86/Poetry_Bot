@@ -1,6 +1,6 @@
 def main():
     try:
-        from bot import bot, give_logger
+        from bot import bot, prepare_attributes
         from os import getenv
         from dotenv import load_dotenv
         from logger import get_handler
@@ -10,14 +10,17 @@ def main():
         load_dotenv()
         token = getenv('DISCORD_TOKEN')
 
-        log, handler = get_handler()
-        give_logger(log, handler)
-        
         initialize_dataframe("Poetry.csv")
 
+        log, handler = get_handler()
+        prepare_attributes(log, handler)
+        
         bot.run(token, log_handler=handler, log_level=INFO)
+    except ModuleNotFoundError:
+        print("You need to install the required modules with 'pip install -U -r requirements.txt'")
     except:
         print("Something went wrong...")
-        
+
+
 if __name__ == "__main__":
     main()
