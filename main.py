@@ -1,6 +1,6 @@
 def main():
     try:
-        from bot import bot, prepare_attributes
+        from bot import bot, pass_attributes
         from os import getenv
         from dotenv import load_dotenv
         from logger import get_handler
@@ -13,7 +13,7 @@ def main():
         initialize_dataframe("Poetry.csv")
 
         log, handler = get_handler()
-        prepare_attributes(log, handler)
+        pass_attributes(log, handler)
         
         bot.run(token, log_handler=handler, log_level=INFO)
     except ModuleNotFoundError:

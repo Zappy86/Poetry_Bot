@@ -2,13 +2,16 @@ import discord
 from discord.ext import commands
 import poetry_interface as pi
 
-def prepare_attributes(arg1, arg2):
+# It wasn't working when I'd make the logger twice, so I pass the logger here
+def pass_attributes(arg1, arg2):
     global log, handler, description
     log = arg1
     handler=arg2
 
 intents = discord.Intents.default()
 intents.message_content = True
+
+# Docs said you could disable these because they're "spammy"
 intents.guild_typing = False
 intents.dm_typing = False
 
@@ -25,22 +28,29 @@ async def not_found(ctx):
     await ctx.send("```Sorry! I couldn't find what you were looking for. :/```")
     return 0
 
-async def send_message(ctx, message, split_character = "\n"):
+async def send_message(ctx, message: str, split_character = "\n"):
     '''Send messages wrapped in ``` in chunks small enough for discord'''
-    
+
     if len(message) > 1993:
         working_chunk = []
         split = message.split(split_character)
         chunks = []
+        
         for word in split:
-            if len(split_character.join(working_chunk + [word])) <= 1990:
+            if len(split_character.join(working_chunk + [word])) <= 1993:
                 working_chunk.append(word)
             else:
                 chunks.append(split_character.join(working_chunk))
                 working_chunk = [word]
         if working_chunk: chunks.append(split_character.join(working_chunk))
+        
+        # Edge case if there's no good character to split at, the poems probably messed up anyways though
+        if any(len(x) > 1993 for x in chunks):
+            await send_message(ctx, message, " ")
+            return 0
+        
         for chunk in chunks:
-                await ctx.send(f"```{chunk}```")
+            await ctx.send(f"```{chunk}```")
     else:
         await ctx.send(f"```{message}```")
     return 0
@@ -50,7 +60,7 @@ async def send_message(ctx, message, split_character = "\n"):
 @bot.event
 async def on_command_error(ctx, error):
     log.error(f"'@{ctx.author}' invoked '{ctx.message.content}' in '{ctx.channel}' and it raised '{error}'")
-    await ctx.send(f"```Sorry! There was an error: -> {str(error).removesuffix(".")} <-\nUse !help to see command usage```")
+    await ctx.send(f"```Sorry! There was an error: -> {str(error).removesuffix(".")} <-\n\nUse !help to see command usage```")
 
 @bot.event
 async def on_ready():
