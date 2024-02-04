@@ -46,7 +46,7 @@ Parameters (except those with *) usually need to be wrapped in quotes, brackets 
 | poet           | Gets list of poet's poems                                      | `!poet poet [number of results]`                |
 | num-of-tag     | Gets the number of poems with specified tag                   | `!num-of-tag tag`                                 |
 
-(If you're sending a parameter with only one word you don't need quotes)
+(If you're sending one parameter with only one word, or using a command with only one parameter, you don't need quotes)
 
 
 
