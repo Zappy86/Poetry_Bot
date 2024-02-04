@@ -148,7 +148,7 @@ def search_titles_for_string(search: str, num_of_poems) -> list:
         for index, item in enumerate(chosen_poems):
             if search == item[0].lower():
                 chosen_poems.insert(0, chosen_poems.pop(index))
-        return [chosen_poems, num_of_titles]
+        return [(chosen_poems), num_of_titles]
     
     # If there are more results than requested, adds exact matches to limited_poems, pops the match that was added,
     # then gets a sample for how many more are needed to bring the total to the requested number and adds that to limited_poems

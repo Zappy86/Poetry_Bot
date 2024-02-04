@@ -94,8 +94,11 @@ async def search(ctx, search, num_of_poems = 10):
     if not results:
         await not_found(ctx)
         return
-
-    if num_found <= num_of_poems:
+    if num_found == 1:
+        await log_command(ctx)
+        await poem(ctx, results[0][0], results[0][1])
+        return
+    elif num_found <= num_of_poems:
         message = f"Showing **all** results for '{search}':\n"
     else:
         message = f"Showing **{num_of_poems}** of **{num_found}** results for '{search}':"
@@ -204,7 +207,7 @@ async def random(ctx, number_of_poems = 1):
 
 @bot.command()
 async def find(ctx, *, search : str):
-    search = search.strip('"')
+    search = search[search.index('"') + 1:]
     search = search.split('", by ', 1)
     try:
         search[1] = search[1].strip('"')
