@@ -3,6 +3,7 @@ from discord.ext import commands
 import poetry_interface as pi
 from json import load, dump
 from sys import exit
+from os import popen
 
 # It wasn't working when I'd make the logger twice, so I pass the logger here
 def pass_attributes(arg1, arg2):
@@ -22,8 +23,8 @@ case_insensitive=True, activity = discord.Game(name="!help"))
 
 
 async def log_command(ctx, *args):
-    if not args: args = ""
-    log.info(f"'@{ctx.author}' invoked '{ctx.message.content}'{args} in '{ctx.channel}'")
+    if not args: args = ("",) # remember it's the Comma that makes a tuple, not the parentheses
+    log.info(f"In '{ctx.guild}': '@{ctx.author}' invoked '{ctx.message.content}'{args[0]} in '{ctx.channel}'")
     return 0
 
 async def not_found(ctx):
@@ -59,10 +60,10 @@ async def send_message(ctx, message: str, split_character = "\n"):
     return 0
 # Benefits of (semi-well-factored) code! I didn't have to redo everything to wrap "```" around all the messages!
 
-@bot.event
-async def on_command_error(ctx, error):
-    log.error(f"'@{ctx.author}' invoked '{ctx.message.content}' in '{ctx.channel}' and it raised '{error}'")
-    await ctx.send(f"```Sorry! There was an error: -> {str(error).removesuffix(".")} <-\n\nUse !help to see command usage```")
+# @bot.event
+# async def on_command_error(ctx, error):
+#     log.error(f"'@{ctx.author}' invoked '{ctx.message.content}' in '{ctx.channel}' and it raised '{error}'")
+#     await ctx.send(f"```Sorry! There was an error: -> {str(error).removesuffix(".")} <-\n\nUse !help to see command usage```")
 
 @bot.event
 async def on_ready():
@@ -265,28 +266,38 @@ async def help(ctx, *, arg : str = ""):
     if arg:
         if arg in help_messages:
             await ctx.send(f"```\nHelp message for '{arg}':\n{help_messages[arg]}\n```")
-            await log_command(ctx)
         else:
             await ctx.send("```Command not found, say '!help' for a list of commands.```")
             log.info(f"'@{ctx.author}' invoked '{ctx.message.content}' in {ctx.channel} and it failed")
     else:
-        message = (f"\n{description}\n\nParameters (except those with *) usually need to be wrapped in quotes, brackets specify an optional parameter.\n\n")
+        message = (f"\n{description}\n\n\nParameters (except those with *) usually need to be wrapped in quotes, brackets specify an optional parameter.\n\n")
         for command in help_messages:
             message += f"{command} - {help_messages[command]}\n\n"
-        await log_command(ctx)
         await send_message(ctx, message)
-
-if __name__ == "__main__":
-    print("\nPlease run 'main.py' to initialise bot!\n")
-
-# --------------------------------------------------------------------------------------- Extra things below this point
+    await log_command(ctx)
 
 @bot.command(pass_context = True)
 @commands.is_owner()
 async def shutdown(ctx):
     await ctx.send("Shutting down...")
+    await log_command(ctx)
     await bot.close()
     exit()
+
+if __name__ == "__main__":
+    print("\nPlease run 'main.py' to initialise bot!\n")
+
+# --------------------------------------------------------------------------------------- Extra things below this point
+    
+@bot.command(pass_context = True)
+@commands.is_owner()
+async def run(ctx, *, command: str):
+    '''python -c "{command}"'''
+    
+    try:
+        await send_message(ctx, str(popen(command).read()))
+    except BaseException as e:
+        await ctx.send(f"Something wen't wrong.\n{e}")
 
 @bot.event
 async def on_message(message):

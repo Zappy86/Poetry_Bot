@@ -60,11 +60,11 @@ def get_tags_of_poem(title: str, poet: str = "") -> list:
     # If poet was given, checks against title and poet, otherwise just title
     if poet:
         for row in df.itertuples():
-            if row.Title == title and row.Poet == poet[0]:
+            if str(row.Title).lower() == title.lower() and str(row.Poet).lower() == poet.lower():
                 tags = row.Tags.split(",")
     else:
         for row in df.itertuples():
-            if row.Title == title:
+            if str(row.Title).lower() == title.lower():
                 tags = row.Tags.split(",")
     return tags
 
