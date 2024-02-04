@@ -219,6 +219,22 @@ async def random(ctx, number_of_poems = 1):
     await log_command(ctx)
     await send_message(ctx, message)
 
+@bot.command(name="random-list")
+async def random_list(ctx, number_of_poems = 5):
+    results = pi.get_rand_poem(number_of_poems)
+
+    if number_of_poems == 1:
+        message = f"Here is a random poem:\n"
+        for title, poet, _ in results:
+            message += f'\n- "{title}", by {poet}'
+    else:
+        message = f"Here are {number_of_poems} random poems:"
+        for index, item in enumerate(results):
+            message += f'\n{index + 1}.) "{item[0]}", by {item[1]}'
+            
+    await log_command(ctx)
+    await send_message(ctx, message)
+
 @bot.command()
 async def find(ctx, *, search : str):
     search = search[search.index('"') + 1:]
@@ -238,6 +254,7 @@ async def help(ctx, *, arg : str = ""):
         "poem" : "Find the text of a poem: !poem title [poet]",
         "poet" : "Gets list of poet's poems: !poet poet [number of results]",
         "random" : "Gets a random number of poems: !random *[number of poems]",
+        "random-list" : "Gets a list of random poems' titles: !random-list *[number of poems]",
         "find" : "Paste a title and author from the bot or search in the same format: !find *title-and-poet",
         "tags-list" : "Lists all of the tags: !tags-list",
         "tags" : "Get the tags of specified poem: !tags title [poet]",
@@ -262,7 +279,7 @@ async def help(ctx, *, arg : str = ""):
 if __name__ == "__main__":
     print("\nPlease run 'main.py' to initialise bot!\n")
 
-# ------------------------------------------- Extra things below this point
+# --------------------------------------------------------------------------------------- Extra things below this point
 
 @bot.command()
 async def secret(ctx):
