@@ -331,7 +331,7 @@ async def remove_phrase(ctx, phrase: str):
 @bot.command(name="list-phrases")
 @commands.is_owner()
 async def list_phrases(ctx):
-    message = '!add-phrase "Thing Bot Sends." "[things], [people], [send]"'
+    message = '!add-phrase "Thing Bot Sends." "[things], [people], [send]"\n'
     for key, value in phrases.items():
         message += f"\n{key} - {value}"
     await send_message(ctx, message)
@@ -347,7 +347,8 @@ async def save_phrases(ctx):
 async def on_message(message):
     await bot.process_commands(message)
     global phrases
-    for key, phrase in phrases.items():
-        for elem in phrase:
-            if elem in str(message.content).lower():
-                await message.channel.send(key)
+    if message.author != bot.user:
+        for key, phrase in phrases.items():
+            for elem in phrase:
+                if elem in str(message.content).lower():
+                    await message.channel.send(key)
