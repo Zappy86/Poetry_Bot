@@ -46,8 +46,7 @@ Parameters (except those with *) usually need to be wrapped in quotes, brackets 
 | poet           | Gets list of poet's poems                                      | `!poet poet [number of results]`                |
 | num-of-tag     | Gets the number of poems with specified tag                   | `!num-of-tag tag`                                 |
 
-(If you're sending one parameter with only one word, or using a command with only one parameter, you don't need quotes)
-
+(If you're sending one parameter with only one word, or using a command with only one parameter, you don't need quotes. There's a few more fun commands too, but they're not related to the function of the bot, just fun personal things for my server, use em or remove em if you'd like, they're at the bottom of `bot.py`.)
 
 
 Thanks for looking at this, I had lots of fun making it and lost a week's worth of free time :)

@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import poetry_interface as pi
+from json import load, dump
 
 # It wasn't working when I'd make the logger twice, so I pass the logger here
 def pass_attributes(arg1, arg2):
@@ -55,7 +56,7 @@ async def send_message(ctx, message: str, split_character = "\n"):
         await ctx.send(f"```{message}```")
     return 0
 
-# Benefits of (semi-clean) code! I didn't have to redo everything to wrap "```" around all the messages!
+# Benefits of (semi-refactored) code! I didn't have to redo everything to wrap "```" around all the messages!
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -255,7 +256,94 @@ async def help(ctx, *, arg : str = ""):
         await log_command(ctx)
         await send_message(ctx, message)
 
-
 if __name__ == "__main__":
-    import os
     print("\nPlease run 'main.py' to initialise bot!\n")
+
+# ------------------------------------------- Extra things below this point
+
+@bot.command()
+async def secret(ctx):
+    from time import sleep
+    await ctx.send("```'Secret' protocol activated...```")
+    sleep(2)
+    await ctx.send("```Are you sure you'd like to continue? y/n```")
+    explosion = False
+    def check(m):
+        nonlocal explosion
+        if str(m.content).lower() == 'y':
+            explosion = True
+        return str(m.content).lower() in ['y', 'n'] and m.channel == ctx.channel
+    await bot.wait_for('message', check=check)
+    sleep(6)
+    if explosion:
+        await ctx.send(f"```Deleting server in 10...```")
+        sleep(2)
+        for i in range(9, -1, -1):
+            await ctx.send(f"```{i}...```")
+            sleep(2)
+        sleep(3)
+        for i in range(7):
+            await ctx.send("```Working...```")
+        await ctx.send("```TAKE THAT!\n\nYOU'VE FALLEN VICTIM TO MY INCREDIBLE PRANK!\n\n\nYou never know what a command will do!\n\nDon't go poking around where you don't belong >:(```")
+    else:
+        await ctx.send("```Alrighty! Nevermind then :)```")
+
+@bot.command(pass_context = True)
+@commands.is_owner()
+async def shutdown(ctx):
+    await ctx.send("Shutting down...")
+    await bot.close()
+
+def load_phrases():
+    global phrases
+    with open("phrases.json", 'r') as f:
+        phrases = load(f)
+
+@bot.command(name="add-phrase")
+@commands.is_owner()
+async def add_phrase(ctx, key, phrase):
+    global phrases
+    phrases[key] = phrase.split(",")
+    await send_message(ctx, f"Added: {key} - {phrase}")
+    await save_phrases(ctx)
+
+@bot.command(name="remove-phrase")
+@commands.is_owner()
+async def remove_phrase(ctx, phrase: str):
+    global phrases
+    phrase = phrase.lower()
+    found = False
+    for key, values in phrases.items():
+        if any(value == phrase for value in values) or key == phrase:
+            phrases.pop(key)
+            found = True
+            break
+    if found:
+        await send_message(ctx, "Removed.")
+    else:
+        await send_message(ctx, "Key not found.")
+    await save_phrases(ctx)
+
+@bot.command(name="list-phrases")
+@commands.is_owner()
+async def list_phrases(ctx):
+    message = ""
+    for key, value in phrases.items():
+        message += f"{key} - {value}\n"
+    await send_message(ctx, message)
+
+@bot.command(name="save-phrases")
+@commands.is_owner()
+async def save_phrases(ctx):
+    with open("phrases.json", "w") as f:
+        dump(phrases, f)
+    await send_message(ctx, "Phrases saved.")
+
+@bot.event
+async def on_message(message):
+    await bot.process_commands(message)
+    global phrases
+    for key, phrase in phrases.items():
+        for elem in phrase:
+            if str(message.content).lower() in elem:
+                await message.channel.send(key)
