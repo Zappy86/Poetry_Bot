@@ -66,7 +66,7 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}!\nAt:")
+    print(f"Logged in as {bot.user}!\nIn:")
     for x in bot.user.mutual_guilds:
         print(x)
     log.info(f"Logged in as {bot.user}!")
