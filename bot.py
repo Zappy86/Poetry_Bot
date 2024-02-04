@@ -108,9 +108,9 @@ async def random_titles(ctx, number_of_poems = 5):
 
 @bot.command()
 async def find(ctx, *, search : str):
-    search = search[search.index('"') + 1:]
-    search = search.split('", by ', 1)
     try:
+        search = search[search.index('"') + 1:]
+        search = search.split('", by ', 1)    
         search[1] = search[1].strip('"')
         await poem(ctx, search[0], search[1])
     except:
@@ -129,7 +129,7 @@ async def search(ctx, search, num_of_poems = 10):
     elif num_found <= num_of_poems:
         message = f"Showing **all** results for '{search}':\n"
     else:
-        message = f"Showing **{num_of_poems}** of **{num_found}** results for '{search}':"
+        message = f"Showing **{len(results)}** of **{num_found}** results for '{search}':"
 
     for title, poet in results:
         message += f'\n- "{title}", by {poet}'
@@ -145,7 +145,7 @@ async def poem(ctx, title: str, poet=""):
         results = pi.get_poem_by_title(title)
     
     if not results:
-        await not_found(ctx)
+        await search(ctx, title)
         return
     
     message = f'"{results[0]}", by {results[1]}\n{results[2]}'
@@ -250,15 +250,15 @@ async def help(ctx, *, arg : str = ""):
     description = "I'm a helpful bot for displaying and searching for poems, I know more than 10000 of them! :)"
     
     help_messages = {
-        "search" : "Search titles for query: !search query [number of results]",
+        "search" : "Search titles for query: !search query *[number of results]",
         "poem" : "Find the text of a poem: !poem title [poet]",
-        "poet" : "Gets list of poet's poems: !poet poet [number of results]",
+        "poet" : "Gets list of poet's poems: !poet poet *[number of results]",
         "random" : "Gets a random number of poems: !random *[number of poems]",
         "random-titles" : "Gets a list of random poems' titles: !random-titles *[number of poems]",
         "find" : "Paste a title and author from the bot or search in the same format: !find *title-and-poet",
         "tags-list" : "Lists all of the tags: !tags-list",
         "tags" : "Get the tags of specified poem: !tags title [poet]",
-        "poems-with-tag" : "Gets a list of poems with specified tag: !poems-with-tag tag [number of results]",
+        "poems-with-tag" : "Gets a list of poems with specified tag: !poems-with-tag tag *[number of results]",
         "num-of-tag" : "Gets the number of poems with specified tag: !num-of-tag tag",
         "title-list" : "Get a list of poems that match title exactly: !title-list title"
     }
