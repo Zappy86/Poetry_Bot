@@ -93,18 +93,18 @@ def get_poem_by_title(title: str, *poet: str) -> tuple:
     '''
     Poet param is optional, useful when more than one poem has the same name.
 
-    Returns: `(Poet, Poem)`
+    Returns: `(Title, Poet, Poem)`
     '''
     
     # If poet was given, checks against title and poet, otherwise just title
     if poet:
         for row in df.itertuples():
             if str(row.Title).lower() == title.lower() and str(row.Poet).lower() == poet[0].lower():
-                return (row.Poet, row.Poem)
+                return (row.Title, row.Poet, row.Poem)
     else:
         for row in df.itertuples():
             if str(row.Title).lower() == title.lower():
-                return (row.Poet, row.Poem)
+                return (row.Title, row.Poet, row.Poem)
     return ()
 
 def get_all_poems_with_title(title: str) -> list:

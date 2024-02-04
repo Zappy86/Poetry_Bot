@@ -58,7 +58,7 @@ async def on_ready():
     log.info(f"Logged in as {bot.user}!")
 
 @bot.command()
-async def poem(ctx, title, poet=""):
+async def poem(ctx, title: str, poet=""):
     if poet:
         results = pi.get_poem_by_title(title, poet)
     else:
@@ -68,7 +68,7 @@ async def poem(ctx, title, poet=""):
         await not_found(ctx)
         return
     
-    message = f'"{title}", by {results[0]}\n{results[1]}'
+    message = f'"{results[0]}", by {results[1]}\n{results[2]}'
     
     await log_command(ctx)
     await send_message(ctx, message)
