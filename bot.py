@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import poetry_interface as pi
 from json import load, dump
+from sys import exit
 
 # It wasn't working when I'd make the logger twice, so I pass the logger here
 def pass_attributes(arg1, arg2):
@@ -65,7 +66,9 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}!")
+    print(f"Logged in as {bot.user}!\nAt:")
+    for x in bot.user.mutual_guilds:
+        print(x)
     log.info(f"Logged in as {bot.user}!")
 
 @bot.command()
@@ -293,6 +296,7 @@ async def secret(ctx):
 async def shutdown(ctx):
     await ctx.send("Shutting down...")
     await bot.close()
+    exit()
 
 def load_phrases():
     global phrases
