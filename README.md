@@ -24,8 +24,10 @@ These are instructions for *Windows*, and they're probably a little different on
     - Run `.venv\scripts\activate`
 5) Run `pip install -r requirements.txt`
 6) Run the main file with `py main.py`'
-7) Invite the bot to your server at some point with a link from the Developer Portal
+7) Invite the bot to a server at some point:
+    - In the Developer Portal, OAuth2 > URL Generator, select bot
     - Enable "Read Messages/View Channels", "Send Messages", and "Send Messages in Threads"... or just admin
+    - Invite the bot to a server you're an admin in
 
 If you made the venv you have to start it up again so you have access to the modules every time in the future that you need to start up the bot.
 
@@ -43,3 +45,5 @@ Parameters (except those with *) usually need to be wrapped in quotes, brackets 
 | poems-with-tag | Gets a list of poems with specified tag                       | `!poems-with-tag *tag* *[number of results]*`       |
 | poet           | Gets list of poet's poems                                      | `!poet *poet* *[number of results]*`                |
 | num-of-tag     | Gets the number of poems with specified tag                   | `!num-of-tag *tag*`                                 |
+
+Thanks for looking at this, I had lots of fun making it and lost a week's worth of free time :)
