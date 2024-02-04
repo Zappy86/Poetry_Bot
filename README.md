@@ -35,15 +35,19 @@ If you made the venv you have to start it up again so you have access to the mod
 Parameters (except those with *) usually need to be wrapped in quotes, brackets specify an optional parameter.
 | Command        | Description                                                   | Usage                                              |
 | -------------- | ------------------------------------------------------------- | --------------------------------------------------- |
-| random         | Gets a random number of poems                                 | `!random *[number of poems]*`                        |
-| poem           | Find the text of a poem                                       | `!poem *title* *[poet]*`                             |
-| find           | Paste a title and author or search in the same format         | `!find *title-and-poet*`                             |
-| exact-title    | Get a list of poems that match title exactly                  | `!exact-title *title*`                               |
-| search         | Search titles for query                                       | `!search *query* *[number of results]*`             |
+| random         | Gets a random number of poems                                 | `!random *[number of poems]`                        |
+| poem           | Find the text of a poem                                       | `!poem title [poet]`                             |
+| find           | Paste a title and author or search in the same format         | `!find *title-and-poet`                             |
+| exact-title    | Get a list of poems that match title exactly                  | `!exact-title title`                               |
+| search         | Search titles for query                                       | `!search query [number of results]`             |
 | tags-list      | Lists all of the tags                                         | `!tags-list`                                        |
-| tags           | Get the tags of specified poem                                | `!tags *title* *[poet]*`                             |
-| poems-with-tag | Gets a list of poems with specified tag                       | `!poems-with-tag *tag* *[number of results]*`       |
-| poet           | Gets list of poet's poems                                      | `!poet *poet* *[number of results]*`                |
-| num-of-tag     | Gets the number of poems with specified tag                   | `!num-of-tag *tag*`                                 |
+| tags           | Get the tags of specified poem                                | `!tags title [poet]`                             |
+| poems-with-tag | Gets a list of poems with specified tag                       | `!poems-with-tag tag [number of results]`       |
+| poet           | Gets list of poet's poems                                      | `!poet poet [number of results]`                |
+| num-of-tag     | Gets the number of poems with specified tag                   | `!num-of-tag tag`                                 |
+
+(If you're sending a parameter with only one word you don't need quotes)
+
+
 
 Thanks for looking at this, I had lots of fun making it and lost a week's worth of free time :)
