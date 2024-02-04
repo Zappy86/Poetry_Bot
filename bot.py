@@ -204,13 +204,13 @@ async def random(ctx, number_of_poems = 1):
 
 @bot.command()
 async def find(ctx, *, search : str):
+    search = search.strip('"')
+    search = search.split('", by ', 1)
     try:
-        search = search[search.find('"') + 1:]
-        search = search.split('", by ')
+        search[1] = search[1].strip('"')
+        await poem(ctx, search[0], search[1])
     except:
-        await not_found()
-        
-    await poem(ctx, search[0], search[1])
+        await ctx.send('''```Something went wrong, the format is:\n"Poem Title", by Poet\n\nDon't forget the comma!```''')
 
 @bot.command()
 async def help(ctx, *, arg : str = ""):
