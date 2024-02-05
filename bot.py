@@ -203,7 +203,7 @@ async def tags_list(ctx):
 async def poems_with_tag(ctx, tag, num_of_poems = 10):
     results = pi.get_poems_with_tag(tag, num_of_poems)
     if not results:
-        not_found()
+        await not_found(ctx)
         return
     
     message = "Poems with that tag:\n"

@@ -37,7 +37,7 @@ def get_poems_with_tag(desired_tag: str, num_of_poems: int = 5) -> list:
     `[(Title, Poet), (Title, Poet)]`
     '''
     # Maps a boolean table of the tags column to the original dataframe
-    poems_with_tag = df[df["Tags"].str.contains(desired_tag, na=False)].reset_index()
+    poems_with_tag = df[df["Tags"].str.lower().str.contains(desired_tag.lower(), na=False)].reset_index()
     
     if poems_with_tag.empty:
         return []
