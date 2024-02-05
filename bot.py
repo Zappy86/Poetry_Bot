@@ -295,7 +295,7 @@ async def run(ctx, *, command: str):
     '''python -c "{command}"'''
     
     try:
-        await send_message(ctx, str(popen(command).read()))
+        await send_message(ctx,str(popen(command).read()))
     except BaseException as e:
         await ctx.send(f"Something wen't wrong.\n{e}")
 
