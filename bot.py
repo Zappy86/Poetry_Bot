@@ -307,7 +307,7 @@ async def on_message(message):
     if message.author != bot.user:
         for key, phrase in phrases.items():
             for elem in phrase:
-                if elem in str(message.content).lower():
+                if elem.lower() in str(message.content).lower():
                     await message.channel.send(key)
 
 def load_phrases():
@@ -330,7 +330,7 @@ async def save_phrases(ctx):
 @bot.command(name="add-phrase")
 async def add_phrase(ctx, key, phrase):
     global phrases
-    phrases[key] = phrase.split(",")
+    phrases[key] = [x.strip() for x in phrase.split(",")]
     await send_message(ctx, f"Added: {key} - {phrase}")
     await save_phrases(ctx)
 
