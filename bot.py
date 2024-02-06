@@ -129,7 +129,6 @@ async def search(ctx, search, num_of_poems = 10):
         await not_found(ctx)
         return
     if num_found == 1:
-        await log_command(ctx)
         await poem(ctx, results[0][0], results[0][1])
         return
     elif num_found <= num_of_poems:
@@ -152,7 +151,7 @@ async def poem(ctx, title: str, poet=""):
     
     if not results:
         await search(ctx, title)
-        return
+        return 0
     
     message = f'"{results[0]}", by {results[1]}\n{results[2]}'
     
