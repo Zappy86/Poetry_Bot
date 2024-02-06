@@ -39,6 +39,7 @@ async def send_message(ctx, message: str, split_character = "\n"):
         working_chunk = []
         split = message.split(split_character)
         chunks = []
+        counter = 0
         
         for word in split:
             if len(split_character.join(working_chunk + [word])) <= 1993:
@@ -54,6 +55,10 @@ async def send_message(ctx, message: str, split_character = "\n"):
             return 0
         
         for chunk in chunks:
+            if counter == 5:
+                ctx.send("```Too many messages...```")
+                return 0
+            counter += 1
             await ctx.send(f"```{chunk}```")
     else:
         await ctx.send(f"```{message}```")
