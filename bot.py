@@ -296,8 +296,8 @@ async def run(ctx, *, command: str):
     
     try:
         await send_message(ctx,str(popen(command).read()))
-    except BaseException as e:
-        await ctx.send(f"Something wen't wrong.\n{e}")
+    except:
+        await ctx.send(f"Something wen't wrong.")
 
 # Respond to things people say
 @bot.event
@@ -322,14 +322,12 @@ async def load_phrases_command(ctx):
 
 
 @bot.command(name="save-phrases")
-@commands.is_owner()
 async def save_phrases(ctx):
     with open("phrases.json", "w") as f:
         dump(phrases, f)
     await send_message(ctx, "Phrases saved.")
 
 @bot.command(name="add-phrase")
-@commands.is_owner()
 async def add_phrase(ctx, key, phrase):
     global phrases
     phrases[key] = phrase.split(",")
@@ -337,7 +335,6 @@ async def add_phrase(ctx, key, phrase):
     await save_phrases(ctx)
 
 @bot.command(name="remove-phrase")
-@commands.is_owner()
 async def remove_phrase(ctx, phrase: str):
     global phrases
     phrase = phrase.lower()
@@ -354,9 +351,8 @@ async def remove_phrase(ctx, phrase: str):
     await save_phrases(ctx)
 
 @bot.command(name="list-phrases")
-@commands.is_owner()
 async def list_phrases(ctx):
-    message = '!add-phrase "Thing Bot Sends." "things, people, send"\n'
+    message = '!add-phrase "Thing Bot Sends." "things people, might send, lowercase"\n'
     for key, value in phrases.items():
         message += f"\n{key} - {value}"
     await send_message(ctx, message)
