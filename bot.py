@@ -60,10 +60,10 @@ async def send_message(ctx, message: str, split_character = "\n"):
     return 0
 # Benefits of (semi-well-factored) code! I didn't have to redo everything to wrap "```" around all the messages!
 
-# @bot.event
-# async def on_command_error(ctx, error):
-#     log.error(f"'@{ctx.author}' invoked '{ctx.message.content}' in '{ctx.channel}' and it raised '{error}'")
-#     await ctx.send(f"```Sorry! There was an error: -> {str(error).removesuffix(".")} <-\n\nUse !help to see command usage```")
+@bot.event
+async def on_command_error(ctx, error):
+    log.error(f"'@{ctx.author}' invoked '{ctx.message.content}' in '{ctx.channel}' and it raised '{error}'")
+    await ctx.send(f"```Sorry! There was an error: -> {str(error).removesuffix(".")} <-\n\nUse !help to see command usage```")
 
 @bot.event
 async def on_ready():
