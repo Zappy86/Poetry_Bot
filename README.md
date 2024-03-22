@@ -6,7 +6,7 @@ This was my first real Python project too!
 
 In the code is a csv file generously provided by *someone else*! The formatting was a little wonky, and I had to clean it up quite a bit, but that helped me learn how pandas worked, and I would've ended up slogging my way through learning it eventually anyways. Even still lots of the text of the poems themselves is all wrong, and it seems like sometimes new lines got smushed in with the one before, but there's not much I can do to fix it. Webscraping doesn't seem like a bad next project, so maybe I'll try scraping Poetry Foundation myself :)
 
-This took quite a while (not that it was necessarily hard, but I'm still learning python, and lots of errors came up), probably a couple dozen hours (not counting the couple dozen I spent learning python in the first place), but ultimately it turned out about how I wanted.
+This took quite a while, not that it was particularly hard, but I'm still learning python and lots of errors cropped up :') probably a couple dozen hours (not counting the couple dozen I spent learning python in the first place, this was also the first time I've had to rely completely on someone's documentation...), but ultimately it turned out about how I wanted.
 
 I turned off intellisense, and tried to use AI as little as possible, so I think I actually learned a lot... at least about these libraries, but also about how to read documentation. Discord.py was tricky because there isn't a ton of it.
 
